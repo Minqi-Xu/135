@@ -1,0 +1,25 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-abbr-reader.ss" "lang")((modname not-catan) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #t)))
+;; Minqi Xu (20845758)
+;; CS135 Fall 2019
+;; Assignment06, Problem 1
+
+(define-struct inventory (blocks wood sheep wheat rocks))
+;; An Inventory is a (make-inventory Nat Nat Nat Nat Nat)
+;; requires: wheat >= sheep
+;;           wheat >= 4
+
+(define-struct cost (blocks wood sheep wheat rocks))
+;; A Cost is a (make-cost Nat Nat Nat Nat Nat)
+
+;; template's contract
+;; inventory-template: Inventory -> Any
+
+;; template
+(define (inventory-template inventory)
+  (... (inventory-blocks inventory) ...
+       (inventory-wood inventory) ...
+       (inventory-sheep inventory) ...
+       (inventory-wheat inventory) ...
+       (inventory-rocks inventory) ...))

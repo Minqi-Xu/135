@@ -1,0 +1,76 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname belowspline) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #t)))
+;; Minqi Xu (20845758)
+;; CS135 Fall 2019
+;; Assignment03, Problem 4
+
+;; purpose
+;;  (make-point x y) cosumes x and y and produces the list of length 2
+;; containing x y
+;;  (x-coord point) accesses the x coordinate of point
+;;  (y-coord point) accesses the y coordinate of point
+;;  (slope p1 p2) calculate the slope of the line which contains p1 and p2
+;;  (below-spline? p1 p2 p3) determines whether the point3(p3) is in the
+;; grey area of the diagram
+;;     requires: 0<(first p1)<(first p2)<10
+;;               (first (rest p1))>0
+;;               (first (rest p2))>0
+
+;; contract
+;; make-point: Num Num -> (listof Num)
+;; x-coord: (listof Num) -> Num
+;; y-coord: (listof Num) -> Num
+;; slope: (listof Num) (listof Num) -> Num
+;; below-spline?: (listof Num) (listof Num) (listof Num) -> Bool
+
+
+;;example
+(check-expect (make-point 5 6) (cons 5 (cons 6 empty)))
+(check-expect (x-coord (cons 5 (cons 6 empty))) 5)
+(check-expect (y-coord (cons 5 (cons 6 empty))) 6)
+(check-expect (slope (cons 1 (cons 1 empty)) (cons 5 (cons 6 empty))) (/ 5 4))
+(check-expect (below-spline? P1 P2 (make-point -1 -2)) false)
+
+
+;;helper function
+(define (make-point x y)
+  (cons x (cons y empty)))
+
+(define (x-coord point)
+  (first point))
+
+(define (y-coord point)
+  (first (rest point)))
+
+(define (slope p1 p2)
+  (/ (- (y-coord p1) (y-coord p2))
+     (- (x-coord p1) (x-coord p2))))
+
+;;define const
+(define origin (make-point 0 0))
+(define p4 (make-point 10 0))
+(define P1 (make-point 3 2))
+(define P2 (make-point 7 3))
+
+;;function body
+(define (below-spline? p1 p2 p3)
+  (cond[(or (< (x-coord p3) 0) (> (x-coord p3) 10)) false]
+       [(<= (x-coord p3) (x-coord p1))
+        (<= (y-coord p3) (* (x-coord p3) (slope origin p1)))]
+       [(<= (x-coord p3) (x-coord p2))
+        (<= (y-coord p3) (+ (y-coord p1)
+                            (* (- (x-coord p3) (x-coord p1))
+                               (slope p1 p2))))]
+       [else (<= (y-coord p3) (+ (y-coord p2)
+                                 (* (- (x-coord p3) (x-coord p2))
+                                    (slope p2 p4))))]))
+
+;;test
+(check-expect (below-spline? P1 P2 (make-point 1 1)) false)
+(check-expect (below-spline? P1 P2 (make-point 1 1/2)) true)
+(check-expect (below-spline? P1 P2 (make-point 3 2)) true)
+(check-expect (below-spline? P1 P2 (make-point 5 (+ 5/2 1/100)))
+              false)
+(check-expect (below-spline? P1 P2 (make-point 100 -2)) false)
+(check-expect (below-spline? P1 P2 (make-point 8 90)) false)

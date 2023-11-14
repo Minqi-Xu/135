@@ -1,0 +1,31 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname translations) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #t)))
+;; Minqi Xu (20845758)
+;; CS 135 2019 Fall
+;; Assignment 01, Problem 2
+
+
+(define (volume r)
+  (* (/ 4 3) pi (expt r 3)))
+
+
+(define phi
+  (/ (+ 1 (sqrt 5)) 2))
+
+(define (fib n)
+  (/ (- (expt phi n)
+        (expt (- phi) (- n)))
+     (- (* 2 phi) 1)))
+
+
+(define G 6.674e-11)
+
+(define (escape m r)
+  (sqrt (/ (* 2 G m) r)))
+
+
+(define P-ref 2e-5)
+
+(define (pressure->loudness P)
+  (* 20 (/ (log (/ P P-ref)) (log 10))))

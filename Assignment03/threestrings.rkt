@@ -1,0 +1,154 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname threestrings) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #t)))
+;; Minqi Xu (20845758)
+;; CS135 Fall 2019
+;; Assignment03, Problem 3
+
+;;purpose
+;; (in-order? string1 string2 string3) is determine whether the strings
+;; are in the lexicographic order
+;; (sort3 list) is trying to reorder the list of strings(with 3 elements)
+;; such that three string elements are in the lexicographic order
+;; (find-second) produces the second largest string in the list and produce
+;; empty while all three elements in the list are all same
+;; (element1 list) get the first element of the list
+;; (element2 list) get the second element of the list
+;; (element3 list) get the third element of the list
+
+;;contract
+;; in-order?: Str Str Str -> Bool
+;; element1: (listof Str) -> Str
+;; element2: (listof Str) -> Str
+;; element3: (listof Str) -> Str
+;; sort3: (listof Str) -> (listof Str)
+;; find-second: (listof Str) -> (anyof Str empty)
+
+;;example
+(check-expect (element1 (cons "a" (cons "b" (cons "c" empty)))) "a")
+(check-expect (element2 (cons "a" (cons "b" (cons "c" empty)))) "b")
+(check-expect (element3 (cons "a" (cons "b" (cons "c" empty)))) "c")
+(check-expect (in-order? "a" "b" "c") true)
+(check-expect
+ (sort3 (cons "a" (cons "b" (cons "c" empty))))
+ (cons "a" (cons "b" (cons "c" empty))))
+(check-expect
+ (find-second (cons "c" (cons "a" (cons "b" empty)))) "b")
+
+;;helper function
+(define (element1 list)
+  (first list))
+
+(define (element2 list)
+  (first (rest list)))
+
+(define (element3 list)
+  (first (rest (rest list))))
+
+;;function body
+(define (in-order? string1 string2 string3)
+  (string<=? string1 string2 string3))
+
+(define (sort3 list)
+  (cond[(in-order? (element1 list) (element2 list) (element3 list)) list]
+       [(and (string=? (element2 list) (element3 list))
+             (string>? (element1 list) (element2 list))
+             (string>? (element1 list) (element3 list)))
+        (cons (element2 list)
+              (cons (element3 list)
+                    (cons (element1 list) empty)))]
+       [(and (string=? (element1 list) (element3 list))
+             (string>? (element1 list) (element2 list))
+             (string>? (element3 list) (element2 list)))
+        (cons (element2 list)
+              (cons (element1 list)
+                    (cons (element3 list) empty)))]
+       [(and (string=? (element1 list) (element3 list))
+             (string>? (element2 list) (element1 list))
+             (string>? (element2 list) (element3 list)))
+        (cons (element1 list)
+              (cons (element3 list)
+                    (cons (element2 list) empty)))]
+       [(and (string=? (element1 list) (element2 list))
+             (string>? (element1 list) (element3 list))
+             (string>? (element2 list) (element3 list)))
+        (cons (element3 list)
+              (cons (element1 list)
+                    (cons (element2 list) empty)))]
+       [(and (string<? (element1 list) (element3 list))
+             (string<? (element3 list) (element2 list)))
+        (cons (element1 list)
+              (cons (element3 list)
+                    (cons (element2 list) empty)))]
+       [(and (string<? (element2 list) (element1 list))
+             (string<? (element1 list) (element3 list)))
+        (cons (element2 list)
+              (cons (element1 list)
+                    (cons (element3 list) empty)))]
+       [(and (string<? (element3 list) (element1 list))
+             (string<? (element1 list) (element2 list)))
+        (cons (element3 list)
+              (cons (element1 list)
+                    (cons (element2 list) empty)))]
+       [(and (string<? (element2 list) (element3 list))
+             (string<? (element3 list) (element1 list)))
+        (cons (element2 list)
+              (cons (element3 list)
+                    (cons (element1 list) empty)))]
+       [else (cons (element3 list)
+                   (cons (element2 list)
+                         (cons (element1 list) empty)))]))
+
+(define (find-second list)
+  (cond[(and (string=? (element1 list) (element2 list))
+             (string=? (element2 list) (element3 list))) empty]
+       [(string=? (element3 (sort3 list)) (element2 (sort3 list)))
+        (element1 (sort3 list))]
+       [else (element2 (sort3 list))]))
+
+;;test
+(check-expect (in-order? "a" "c" "c") true)
+(check-expect (in-order? "b" "a" "b") false)
+(check-expect (in-order? "c" "b" "a") false)
+(check-expect
+ (sort3 (cons "a" (cons "a" (cons "a" empty))))
+ (cons "a" (cons "a" (cons "a" empty))))
+(check-expect
+ (sort3 (cons "a" (cons "b" (cons "b" empty))))
+ (cons "a" (cons "b" (cons "b" empty))))
+(check-expect
+ (sort3 (cons "c" (cons "a" (cons "a" empty))))
+ (cons "a" (cons "a" (cons "c" empty))))
+(check-expect
+ (sort3 (cons "c" (cons "b" (cons "c" empty))))
+ (cons "b" (cons "c" (cons "c" empty))))
+(check-expect
+ (sort3 (cons "a" (cons "b" (cons "a" empty))))
+ (cons "a" (cons "a" (cons "b" empty))))
+(check-expect
+ (sort3 (cons "c" (cons "c" (cons "a" empty))))
+ (cons "a" (cons "c" (cons "c" empty))))
+(check-expect
+ (sort3 (cons "a" (cons "a" (cons "b" empty))))
+ (cons "a" (cons "a" (cons "b" empty))))
+(check-expect
+ (sort3 (cons "a" (cons "c" (cons "b" empty))))
+ (cons "a" (cons "b" (cons "c" empty))))
+(check-expect
+ (sort3 (cons "b" (cons "c" (cons "a" empty))))
+ (cons "a" (cons "b" (cons "c" empty))))
+(check-expect
+ (sort3 (cons "c" (cons "a" (cons "b" empty))))
+ (cons "a" (cons "b" (cons "c" empty))))
+(check-expect
+ (sort3 (cons "c" (cons "b" (cons "a" empty))))
+ (cons "a" (cons "b" (cons "c" empty))))
+(check-expect
+ (sort3 (cons "b" (cons "a" (cons "c" empty))))
+ (cons "a" (cons "b" (cons "c" empty))))
+(check-expect
+ (find-second (cons "c" (cons "c" (cons "a" empty)))) "a")
+(check-expect
+ (find-second (cons "a" (cons "a" (cons "a" empty)))) empty)
+(check-expect
+ (find-second (cons "c" (cons "a" (cons "a" empty)))) "a")

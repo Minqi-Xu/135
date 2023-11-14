@@ -1,0 +1,17 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-abbr-reader.ss" "lang")((modname recursion) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+;; Minqi Xu (20845758)
+;; CS135 Fall 2019
+;; Assignment05, Problem 2
+
+;; purpose
+;;
+
+(define (my-list-ref/position lon index position)
+  (cond[(= index position) (first lon)]
+       [else (my-list-ref/position lon index (add1 position))]))
+
+(define (my-list-ref lon index)
+  (cond[(>= index (length lon)) false]
+       [else (my-list-ref/position lon index 0)]))

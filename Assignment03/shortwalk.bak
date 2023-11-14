@@ -1,0 +1,36 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname shortwalk) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #t)))
+;; Minqi Xu (20845758)
+;; CS135 Fall 2019
+;; Assignment03, Problem 5
+
+;; purpose
+;; (make-point x y) consumes x and y and produces the list of length 2
+;; containing x y
+;; (x-coord point) accesses the x coordinate of point
+;; (y-coord point) accesses the y coordinate of point
+;; (make-step) consumes
+
+(define (make-point x y)
+  (cons x (cons y empty)))
+
+(define (x-coord point)
+  (first point))
+
+(define (y-coord point)
+  (first (rest point)))
+
+(define (make-step start direction distance)
+  (cond[(equal? direction 'N)
+        (cons (x-coord start) (cons(+ (y-coord start) distance) empty))]
+       [(equal? direction 'S)
+        (cons (x-coord start) (cons(- (y-coord start) distance) empty))]
+       [(equal? direction 'E)
+        (cons (+ (x-coord start) distance) (rest start))]
+       [else (cons (- (x-coord start) distance) (rest start))]))
+
+(define (two-steps start direction distance)
+  (make-step (make-step start (first direction) (first distance))
+             (first (rest direction))
+             (first (rest distance))))
